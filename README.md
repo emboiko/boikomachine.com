@@ -61,7 +61,7 @@ Page (thin) → Page component → Section components
 
 ## Portfolio admin
 
-Sign in at `/admin/login`, then manage projects at `/admin/portfolio`. Categories are fixed on the public site (milling, turning, grinding, 3D printing, welding, misc). Upload photos via the admin form; they are served from `/api/portfolio/media`.
+Sign in at `/admin/login`, then manage projects at `/admin/portfolio`. Categories are fixed on the public site (machining, 3D printing, fabrication, repair & misc). Upload photos via the admin form; they are served from `/api/portfolio/media`.
 
 ## Deployment (Vercel)
 

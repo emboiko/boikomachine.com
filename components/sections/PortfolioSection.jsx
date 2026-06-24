@@ -85,7 +85,7 @@ export const PortfolioSection = observer(() => {
       )}
 
       {!portfolio.isLoadingCategories && portfolio.categories.length > 0 ? (
-        <CardGrid>
+        <CardGrid columns={2}>
           {portfolio.categories.map((category) => (
             <PortfolioCategoryCard
               key={category.slug}
