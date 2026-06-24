@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -33,33 +34,61 @@ const handleNavClick = (href, label) => {
   sendGaEvent('cta_click', { cta_type: 'nav', label });
 };
 
+const scrollToSection = (href) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const element = document.querySelector(href);
+
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
 export const Header = observer(() => {
   const store = useStore();
+  const pendingScrollHref = useRef(null);
 
-  const navigateTo = (href) => {
-    handleNavClick(href, href);
-    store.ui.closeMobileNav();
+  const navigateTo = (href, label) => {
+    handleNavClick(href, label);
 
-    if (typeof window !== 'undefined') {
-      const element = document.querySelector(href);
-
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+    if (store.ui.mobileNavOpen) {
+      pendingScrollHref.current = href;
+      store.ui.closeMobileNav();
+      return;
     }
+
+    scrollToSection(href);
+  };
+
+  const handleDrawerExited = () => {
+    if (!pendingScrollHref.current) {
+      return;
+    }
+
+    const href = pendingScrollHref.current;
+    pendingScrollHref.current = null;
+    scrollToSection(href);
   };
 
   const navList = (
     <List sx={{ width: 260 }}>
       {NAV_ITEMS.map((item) => (
         <ListItem key={item.href} disablePadding>
-          <ListItemButton onClick={() => navigateTo(item.href)}>
+          <ListItemButton onClick={() => navigateTo(item.href, item.label)}>
             <ListItemText primary={item.label} />
           </ListItemButton>
         </ListItem>
       ))}
       <ListItem disablePadding>
-        <ListItemButton component="a" href={BUSINESS.phoneHref}>
+        <ListItemButton
+          component="a"
+          href={BUSINESS.phoneHref}
+          onClick={() => {
+            store.ui.closeMobileNav();
+          }}
+        >
           <ListItemText primary="Call" secondary={BUSINESS.phone} />
         </ListItemButton>
       </ListItem>
@@ -73,6 +102,8 @@ export const Header = observer(() => {
         color="inherit"
         elevation={0}
         sx={{
+          top: 0,
+          zIndex: (theme) => theme.zIndex.appBar,
           borderBottom: 1,
           borderColor: 'divider',
           backgroundColor: 'background.paper',
@@ -108,7 +139,7 @@ export const Header = observer(() => {
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, alignItems: 'center' }}>
               {NAV_ITEMS.map((item) => (
-                <Button key={item.href} color="inherit" onClick={() => navigateTo(item.href)}>
+                <Button key={item.href} color="inherit" onClick={() => navigateTo(item.href, item.label)}>
                   {item.label}
                 </Button>
               ))}
@@ -139,6 +170,7 @@ export const Header = observer(() => {
         open={store.ui.mobileNavOpen}
         onClose={() => store.ui.closeMobileNav()}
         sx={{ display: { md: 'none' } }}
+        SlideProps={{ onExited: handleDrawerExited }}
       >
         {navList}
       </Drawer>

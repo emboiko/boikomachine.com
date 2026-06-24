@@ -1,10 +1,19 @@
-html,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  /* 64px app bar + 16px so section titles clear the sticky header */
+  scroll-padding-top: 5rem;
+}
+
 body {
   margin: 0;
   padding: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 *,

@@ -7,10 +7,6 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com', // todo: replace with our own images
-      },
-      {
-        protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',
       },
     ],

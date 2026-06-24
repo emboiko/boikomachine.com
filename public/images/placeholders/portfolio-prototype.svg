@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Prototype placeholder">
-  <rect width="800" height="600" fill="#dfe3e6"/>
-  <polygon points="400,110 620,430 180,430" fill="#f4f6f7" stroke="#9aa3ab" stroke-width="2"/>
-  <text x="400" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#5f6b73">Prototype</text>
-</svg>

@@ -27,13 +27,7 @@ Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js l
    npm install
    ```
 
-4. Seed portfolio placeholders (once):
-
-   ```bash
-   npm run seed:portfolio
-   ```
-
-5. Start the dev server:
+4. Start the dev server:
 
    ```bash
    npm run dev
@@ -52,7 +46,7 @@ Page (thin) → Page component → Section components
 - **`stores/`** - MobX State Tree (UI, Contact, Portfolio)
 - **`services/client/`** - browser `fetch` layer (stores call these only)
 - **`lib/services/`** - server business logic (route handlers call these only)
-- **`lib/storage/`** - Vercel Blob uploads for contact attachments
+- **`lib/storage/`** - Vercel Blob uploads for contact attachments and portfolio media
 
 ## Scripts
 
@@ -63,15 +57,18 @@ Page (thin) → Page component → Section components
 | `npm run start` | Run production build locally |
 | `npm run lint` | ESLint |
 | `npm run format` | Prettier write |
-| `npm run seed:portfolio` | Upsert placeholder portfolio items in MongoDB |
+| `npm run hash:admin-password` | Generate bcrypt hash for `ADMIN_PASSWORD_HASH` |
+
+## Portfolio admin
+
+Sign in at `/admin/login`, then manage projects at `/admin/portfolio`. Categories are fixed on the public site (milling, turning, grinding, 3D printing, welding, misc). Upload photos via the admin form; they are served from `/api/portfolio/media`.
 
 ## Deployment (Vercel)
 
 1. Import the GitHub repo into Vercel.
 2. Set environment variables from `.env.example` (use production `NEXT_PUBLIC_SITE_URL`).
 3. Enable Vercel Analytics in the project dashboard.
-4. Run `npm run seed:portfolio` locally against production Atlas once, or run via a one-off script.
-5. Point DNS for `boikomachine.com` to Vercel.
+4. Point DNS for `boikomachine.com` to Vercel.
 
 ## Contact form attachments - ops note
 

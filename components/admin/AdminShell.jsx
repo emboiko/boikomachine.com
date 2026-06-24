@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-export const AdminShell = ({ children }) => {
+export const AdminShell = ({ children, title = 'Admin', backHref, backLabel = 'Back' }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -29,11 +29,21 @@ export const AdminShell = ({ children }) => {
           }}
         >
           <Typography component="h1" variant="h2">
-            Admin
+            {title}
           </Typography>
-          <Button variant="outlined" onClick={handleLogout}>
-            Sign out
-          </Button>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            <Button component="a" href="/" variant="text">
+              View site
+            </Button>
+            {backHref ? (
+              <Button component="a" href={backHref} variant="text">
+                {backLabel}
+              </Button>
+            ) : null}
+            <Button variant="outlined" onClick={handleLogout}>
+              Sign out
+            </Button>
+          </Stack>
         </Box>
         {children}
       </Stack>

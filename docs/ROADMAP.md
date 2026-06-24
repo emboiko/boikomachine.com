@@ -1,21 +1,6 @@
-# Boiko Machine & Tool — Roadmap
+# Boiko Machine & Tool - Roadmap
 
 Informal backlog beyond v1. Not committed to timeline.
-
-## Near-term (before first production deploy)
-
-- **Deploy pipeline** — Vercel staging project first; later: feature branch → staging → `main`
-- **Portfolio admin CRUD** — last major item before initial go-live (see §4)
-
-**Testing:** No automated test suite planned for v1. The site is small; manual smoke tests on form, auth, and deploy are enough unless complexity grows.
-
-## Already in place
-
-- Landing page, contact form, Turnstile, MongoDB submissions
-- Resend notifications (`shop@`), private Blob attachments, session-gated downloads
-- Admin login (`/admin/login`), 30-day session, header admin shortcut when signed in
-
----
 
 ## 1. Advanced file pipeline
 
@@ -35,7 +20,6 @@ Informal backlog beyond v1. Not committed to timeline.
 
 ## 4. Admin UI
 
-- Portfolio CRUD (categories, descriptions, media — see §6)
 - Contact submission inbox (read-only list; email remains primary workflow)
 
 ## 5. Google Business Profile
@@ -46,10 +30,9 @@ Informal backlog beyond v1. Not committed to timeline.
 
 ## 6. Portfolio expansion
 
-- Category grids from the main portfolio section (fixtures, bushings, prototypes, etc.)
-- Optional fields per item: description, in-progress shop photos, 3D model, prototype vs final, YouTube clip link
-- Real photography over time (white-background part shots; replace SVG placeholders)
-- Ties directly into admin portfolio CRUD
+- **Dedicated portfolio routes (future)** - When 10+ documented jobs exist, add `/portfolio/[category]` and `/portfolio/[category]/[slug]` pages for SEO and shareable URLs. The landing-page modal flow remains the entry point; routes become canonical detail pages.
+- Real photography over time (white-background part shots)
+- Inline 3D model viewer (download links exist today)
 
 ## 7. Service area & positioning
 
@@ -60,7 +43,7 @@ Informal backlog beyond v1. Not committed to timeline.
 ## 8. Customer resources
 
 - Curated links for customers who want to draw or model parts (web-based CAD, Autodesk tools, etc.)
-- Messaging: 3D models and drawings are ideal; photos/PDFs/descriptions are fine — we can help customers who cannot or do not want to model
+- Messaging: 3D models and drawings are ideal; photos/PDFs/descriptions are fine - we can help customers who cannot or do not want to model
 
 ## 9. Social & external links
 
@@ -68,4 +51,4 @@ Informal backlog beyond v1. Not committed to timeline.
 
 ## 10. Payments & billing (TBD)
 
-- Deposits, invoicing, payment processing for a solo manual shop — research options when volume warrants it
+- Deposits, invoicing, payment processing for a solo manual shop - research options when volume warrants it
