@@ -1,0 +1,22 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html[data-mui-color-scheme='dark'] {
+  color-scheme: dark;
+}
+
+html[data-mui-color-scheme='light'] {
+  color-scheme: light;
+}
