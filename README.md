@@ -1,6 +1,6 @@
 # Boiko Machine & Tool
 
-Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js landing page with contact form, portfolio, analytics, and MongoDB-backed services.
+Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js landing page with contact form, portfolio, analytics, and MongoDB-backed services. WIP.
 
 ## Requirements
 
