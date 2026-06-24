@@ -22,8 +22,7 @@ export const HeroSection = () => {
           color="text.secondary"
           sx={{ fontWeight: 500, fontSize: { xs: '1.125rem', md: '1.25rem' } }}
         >
-          Precision machining and tooling in southern New Hampshire. Small jobs welcome - from a
-          single bushing to prototype runs.
+          Custom machining, repair, and tooling based in southern New Hampshire. Small jobs welcome.
         </Typography>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
@@ -40,7 +39,7 @@ export const HeroSection = () => {
       </Stack>
       <Box sx={{ mt: 4 }}>
         <Typography variant="body1" color="text.secondary">
-          Serving {BUSINESS.location} and the greater Merrimack Valley. On-site visits are common.
+          Based in {BUSINESS.location} and serving customers throughout New England and beyond when practical.
         </Typography>
       </Box>
     </Section>

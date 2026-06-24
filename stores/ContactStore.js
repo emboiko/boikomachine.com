@@ -77,6 +77,10 @@ export const ContactStore = types
     clearTurnstileToken() {
       self.turnstileToken = '';
     },
+    refreshTurnstile() {
+      self.turnstileToken = '';
+      self.turnstileKey += 1;
+    },
     setTurnstileUnavailable() {
       self.turnstileUnavailable = true;
       self.turnstileToken = '';
@@ -161,6 +165,14 @@ export const ContactStore = types
         }
 
         self.errorMessage = error.message || 'Failed to submit the form.';
+
+        const message = self.errorMessage.toLowerCase();
+        const isVerificationError =
+          message.includes('verification') || message.includes('challenge');
+
+        if (isVerificationError) {
+          self.refreshTurnstile();
+        }
       } finally {
         self.isSubmitting = false;
       }

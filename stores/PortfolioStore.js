@@ -39,7 +39,7 @@ const PortfolioListItemModel = types.model('PortfolioListItem', {
   description: types.string,
   coverUrl: types.maybeNull(types.string),
   sortOrder: types.number,
-  workStatus: types.maybeNull(types.string),
+  material: types.maybeNull(types.string),
 });
 
 const PortfolioImageModel = types.model('PortfolioImage', {
@@ -66,7 +66,7 @@ const PortfolioDetailItemModel = types.model('PortfolioDetailItem', {
   coverUrl: types.maybeNull(types.string),
   coverStorageKey: types.maybeNull(types.string),
   sortOrder: types.number,
-  workStatus: types.maybeNull(types.string),
+  material: types.maybeNull(types.string),
   youtubeUrl: types.maybeNull(types.string),
   images: types.array(PortfolioImageModel),
   model3d: types.maybeNull(PortfolioModel3dModel),

@@ -77,36 +77,62 @@ export const TurnstileWidget = ({ onVerify, onExpire, onUnavailable }) => {
       }, TURNSTILE_WIDGET_VERIFY_DELAY_MS);
     };
 
+    const removeWidget = () => {
+      if (widgetIdRef.current === null || !window.turnstile) {
+        widgetIdRef.current = null;
+        return;
+      }
+
+      try {
+        window.turnstile.remove(widgetIdRef.current);
+      } catch {
+        // Widget may already be removed.
+      }
+
+      widgetIdRef.current = null;
+    };
+
+    const resetWidget = () => {
+      tokenReceivedRef.current = false;
+      onExpire?.();
+
+      if (widgetIdRef.current === null || !window.turnstile) {
+        return;
+      }
+
+      try {
+        window.turnstile.reset(widgetIdRef.current);
+      } catch {
+        // Widget may already be removed.
+      }
+    };
+
     const renderWidget = () => {
       if (!window.turnstile || !containerRef.current) {
         return;
       }
 
-      if (widgetIdRef.current !== null) {
-        window.turnstile.remove(widgetIdRef.current);
-        widgetIdRef.current = null;
-      }
+      removeWidget();
 
       try {
         const widgetId = window.turnstile.render(containerRef.current, {
           sitekey: siteKey,
           size: 'flexible',
+          'refresh-expired': 'auto',
+          'refresh-timeout': 'auto',
           callback: (token) => {
             tokenReceivedRef.current = true;
             clearVerifyTimeout();
             onVerify(token);
           },
           'expired-callback': () => {
-            tokenReceivedRef.current = false;
-            onExpire();
+            resetWidget();
           },
           'error-callback': () => {
-            reportUnavailable();
+            resetWidget();
           },
           'timeout-callback': () => {
-            if (!tokenReceivedRef.current) {
-              reportUnavailable();
-            }
+            resetWidget();
           },
         });
 
@@ -132,14 +158,17 @@ export const TurnstileWidget = ({ onVerify, onExpire, onUnavailable }) => {
       }, TURNSTILE_SCRIPT_LOAD_TIMEOUT_MS);
     };
 
+    const cleanup = () => {
+      clearLoadTimeout();
+      clearVerifyTimeout();
+      removeWidget();
+    };
+
     if (window.turnstile) {
       startLoadTimeout();
       renderWidget();
 
-      return () => {
-        clearLoadTimeout();
-        clearVerifyTimeout();
-      };
+      return cleanup;
     }
 
     const existingScript = document.querySelector('script[data-turnstile]');
@@ -150,8 +179,7 @@ export const TurnstileWidget = ({ onVerify, onExpire, onUnavailable }) => {
       existingScript.addEventListener('error', reportUnavailable);
 
       return () => {
-        clearLoadTimeout();
-        clearVerifyTimeout();
+        cleanup();
         existingScript.removeEventListener('load', renderWidget);
         existingScript.removeEventListener('error', reportUnavailable);
       };
@@ -169,8 +197,7 @@ export const TurnstileWidget = ({ onVerify, onExpire, onUnavailable }) => {
     document.head.appendChild(script);
 
     return () => {
-      clearLoadTimeout();
-      clearVerifyTimeout();
+      cleanup();
       script.removeEventListener('load', renderWidget);
       script.removeEventListener('error', reportUnavailable);
     };

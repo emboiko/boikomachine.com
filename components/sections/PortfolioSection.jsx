@@ -69,8 +69,7 @@ export const PortfolioSection = observer(() => {
   return (
     <Section id="portfolio" title="Portfolio" containerMaxWidth="lg">
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        Browse work by process - milling, turning, grinding, printing, welding, and more. Select a
-        category to see documented projects.
+      Examples of previous work, repairs, prototypes, tooling, and fixtures.
       </Typography>
 
       {portfolio.isLoadingCategories && (

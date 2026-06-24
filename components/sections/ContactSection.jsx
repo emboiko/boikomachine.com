@@ -179,7 +179,7 @@ export const ContactSection = observer(() => {
                 </Typography>
               )}
               <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
-                Images, PDF, STEP, DXF accepted. 10 MB per file, 25 MB total.
+                Photos, PDF drawings, STEP, and DXF files accepted.
               </Typography>
             </Box>
 

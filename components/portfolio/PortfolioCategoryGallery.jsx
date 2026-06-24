@@ -11,7 +11,6 @@ import { CardGrid } from '@/components/layout/CardGrid';
 import { PortfolioCardImage } from '@/components/portfolio/PortfolioCardImage';
 import { useStore } from '@/components/StoreProvider';
 import { getPortfolioCategoryLabel } from '@/lib/portfolio/categories';
-import { getPortfolioWorkStatusLabel } from '@/lib/portfolio/workStatus';
 import { sendGaEvent, trackPortfolioView } from '@/services/client/analyticsClientService';
 
 export const PortfolioCategoryGallery = observer(() => {
@@ -55,8 +54,6 @@ export const PortfolioCategoryGallery = observer(() => {
   return (
     <CardGrid>
       {portfolio.categoryItems.map((item) => {
-        const statusLabel = getPortfolioWorkStatusLabel(item.workStatus);
-
         return (
           <Card
             key={item.id}
@@ -71,9 +68,9 @@ export const PortfolioCategoryGallery = observer(() => {
           >
             <PortfolioCardImage src={item.coverUrl} alt={item.title} />
             <CardContent sx={{ flexGrow: 1 }}>
-              {statusLabel ? (
+              {item.material ? (
                 <Typography variant="overline" color="text.secondary">
-                  {statusLabel}
+                  {item.material}
                 </Typography>
               ) : null}
               <Typography variant="h3" sx={{ fontSize: '1.125rem', mb: 1 }}>

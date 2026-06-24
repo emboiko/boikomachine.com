@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import { PortfolioCardImage } from '@/components/portfolio/PortfolioCardImage';
 import { PortfolioYouTubeEmbed } from '@/components/portfolio/PortfolioYouTubeEmbed';
 import { useStore } from '@/components/StoreProvider';
-import { getPortfolioWorkStatusLabel } from '@/lib/portfolio/workStatus';
 import { sendGaEvent, trackPortfolioView } from '@/services/client/analyticsClientService';
 
 export const PortfolioJobDetail = observer(() => {
@@ -45,14 +44,12 @@ export const PortfolioJobDetail = observer(() => {
     );
   }
 
-  const statusLabel = getPortfolioWorkStatusLabel(item.workStatus);
-
   return (
     <Stack spacing={3}>
       <Box>
-        {statusLabel ? (
+        {item.material ? (
           <Typography variant="overline" color="text.secondary">
-            {statusLabel}
+            {item.material}
           </Typography>
         ) : null}
         <Typography variant="h3" sx={{ fontSize: '1.5rem', mb: 1 }}>

@@ -16,13 +16,6 @@ import { PORTFOLIO_CATEGORIES } from '@/lib/constants';
 import { slugifyTitle } from '@/lib/portfolio/slugify';
 import { uploadAdminPortfolioMedia } from '@/services/client/adminPortfolioClientService';
 
-const workStatusOptions = [
-  { value: '', label: 'Not specified' },
-  { value: 'prototype', label: 'Prototype' },
-  { value: 'final', label: 'Final part' },
-  { value: 'in_progress', label: 'In progress' },
-];
-
 const buildInitialState = (initialItem) => {
   if (initialItem) {
     return {
@@ -31,7 +24,7 @@ const buildInitialState = (initialItem) => {
       category: initialItem.category,
       description: initialItem.description,
       youtubeUrl: initialItem.youtubeUrl || '',
-      workStatus: initialItem.workStatus || '',
+      material: initialItem.material || '',
       sortOrder: initialItem.sortOrder ?? 0,
       images: initialItem.images.map((image) => ({
         storageKey: image.storageKey,
@@ -51,7 +44,7 @@ const buildInitialState = (initialItem) => {
     category: PORTFOLIO_CATEGORIES[0].slug,
     description: '',
     youtubeUrl: '',
-    workStatus: '',
+    material: '',
     sortOrder: 0,
     images: [],
     coverStorageKey: null,
@@ -129,7 +122,7 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
         category: formState.category,
         description: formState.description.trim(),
         youtubeUrl: formState.youtubeUrl.trim() || null,
-        workStatus: formState.workStatus || null,
+        material: formState.material.trim() || null,
         sortOrder: Number(formState.sortOrder) || 0,
         images: formState.images.map((image, index) => ({
           storageKey: image.storageKey,
@@ -204,21 +197,14 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
         minRows={4}
       />
 
-      <FormControl fullWidth>
-        <InputLabel id="portfolio-work-status-label">Work status</InputLabel>
-        <Select
-          labelId="portfolio-work-status-label"
-          label="Work status"
-          value={formState.workStatus}
-          onChange={(event) => updateField('workStatus', event.target.value)}
-        >
-          {workStatusOptions.map((option) => (
-            <MenuItem key={option.value || 'none'} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <TextField
+        label="Material"
+        value={formState.material}
+        onChange={(event) => updateField('material', event.target.value)}
+        fullWidth
+        placeholder="6061 aluminum, PETG plastic, mild steel, etc."
+        helperText="Optional. Shown above the project title in the gallery and detail views."
+      />
 
       <TextField
         label="Sort order"

@@ -6,9 +6,9 @@ import { SERVICES } from '@/lib/constants';
 
 const SERVICE_DESCRIPTIONS = {
   'Custom Machining & Repair':
-    'Bridgeport milling, lathe work, and repair for worn or damaged parts.',
+    'Repair, modification, and fabrication of one-off parts and worn components.',
   'Precision Prototypes':
-    'One-off and low-volume prototypes to prove out your design before production.',
+    'Prototype and low-volume parts for development, testing, and production support.',
   'Tools, Jigs & Fixtures':
     'Custom workholding and shop aids built to make your job repeatable.',
 };
