@@ -1,8 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -10,11 +9,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import { PortfolioImageManager } from '@/components/admin/PortfolioImageManager';
 import { PORTFOLIO_CATEGORIES } from '@/lib/constants';
 import { slugifyTitle } from '@/lib/portfolio/slugify';
-import { uploadAdminPortfolioMedia } from '@/services/client/adminPortfolioClientService';
+import { fetchAdminPortfolioItems } from '@/services/client/adminPortfolioClientService';
+
+const countItemsInCategory = (items, categorySlug) => {
+  return items.filter((item) => item.category === categorySlug).length;
+};
 
 const buildInitialState = (initialItem) => {
   if (initialItem) {
@@ -34,7 +36,6 @@ const buildInitialState = (initialItem) => {
         sortOrder: image.sortOrder ?? 0,
       })),
       coverStorageKey: initialItem.coverStorageKey || initialItem.images[0]?.storageKey || null,
-      model3d: initialItem.model3d || null,
     };
   }
 
@@ -48,7 +49,6 @@ const buildInitialState = (initialItem) => {
     sortOrder: 0,
     images: [],
     coverStorageKey: null,
-    model3d: null,
   };
 };
 
@@ -57,7 +57,8 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
   const [slugTouched, setSlugTouched] = useState(Boolean(initialItem));
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploadingModel, setIsUploadingModel] = useState(false);
+  const [categoryItemCounts, setCategoryItemCounts] = useState(null);
+  const isCreateMode = !initialItem;
 
   const submitLabel = useMemo(() => {
     if (initialItem) {
@@ -66,6 +67,46 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
 
     return 'Create project';
   }, [initialItem]);
+
+  useEffect(() => {
+    if (!isCreateMode) {
+      return undefined;
+    }
+
+    let isCancelled = false;
+
+    const loadCategoryCounts = async () => {
+      try {
+        const items = await fetchAdminPortfolioItems();
+
+        if (isCancelled) {
+          return;
+        }
+
+        const countsByCategory = {};
+
+        for (const category of PORTFOLIO_CATEGORIES) {
+          countsByCategory[category.slug] = countItemsInCategory(items, category.slug);
+        }
+
+        setCategoryItemCounts(countsByCategory);
+        setFormState((currentState) => ({
+          ...currentState,
+          sortOrder: countsByCategory[currentState.category] ?? 0,
+        }));
+      } catch {
+        if (!isCancelled) {
+          setCategoryItemCounts(null);
+        }
+      }
+    };
+
+    loadCategoryCounts();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isCreateMode]);
 
   const updateField = (field, value) => {
     setFormState((currentState) => {
@@ -78,36 +119,12 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
         nextState.slug = slugifyTitle(value);
       }
 
+      if (field === 'category' && isCreateMode && categoryItemCounts) {
+        nextState.sortOrder = categoryItemCounts[value] ?? 0;
+      }
+
       return nextState;
     });
-  };
-
-  const handleModelUpload = async (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    setIsUploadingModel(true);
-    setErrorMessage('');
-
-    try {
-      const upload = await uploadAdminPortfolioMedia(file, 'model');
-      setFormState((currentState) => ({
-        ...currentState,
-        model3d: {
-          storageKey: upload.storageKey,
-          originalName: upload.originalName,
-          url: upload.url,
-        },
-      }));
-    } catch (error) {
-      setErrorMessage(error.message || 'Failed to upload 3D model.');
-    } finally {
-      setIsUploadingModel(false);
-      event.target.value = '';
-    }
   };
 
   const handleSubmit = async (event) => {
@@ -131,12 +148,6 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
           sortOrder: index,
         })),
         coverStorageKey: formState.coverStorageKey,
-        model3d: formState.model3d
-          ? {
-              storageKey: formState.model3d.storageKey,
-              originalName: formState.model3d.originalName,
-            }
-          : null,
       };
 
       await onSubmit(payload);
@@ -212,7 +223,7 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
         value={formState.sortOrder}
         onChange={(event) => updateField('sortOrder', event.target.value)}
         fullWidth
-        helperText="Lower numbers appear first within a category."
+        helperText="Lower numbers appear first within a category. Other projects shift to keep order contiguous."
       />
 
       <TextField
@@ -229,32 +240,6 @@ export const PortfolioItemForm = ({ initialItem, onSubmit, onDelete, isDeleting 
         onChange={(images) => updateField('images', images)}
         onCoverChange={(coverStorageKey) => updateField('coverStorageKey', coverStorageKey)}
       />
-
-      <Box>
-        <Typography variant="subtitle1" sx={{ mb: 1 }}>
-          3D model file (optional)
-        </Typography>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
-          <Button variant="outlined" component="label" disabled={isUploadingModel}>
-            {isUploadingModel ? 'Uploading…' : 'Upload 3D file'}
-            <input type="file" hidden onChange={handleModelUpload} />
-          </Button>
-          {formState.model3d ? (
-            <Typography variant="body2" color="text.secondary">
-              {formState.model3d.originalName}
-            </Typography>
-          ) : null}
-          {formState.model3d ? (
-            <Button
-              variant="text"
-              color="inherit"
-              onClick={() => updateField('model3d', null)}
-            >
-              Remove
-            </Button>
-          ) : null}
-        </Stack>
-      </Box>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
         <Button type="submit" variant="contained" disabled={isSubmitting}>

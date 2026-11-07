@@ -5,7 +5,6 @@ import { observer } from 'mobx-react-lite';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { PortfolioCardImage } from '@/components/portfolio/PortfolioCardImage';
@@ -85,17 +84,6 @@ export const PortfolioJobDetail = observer(() => {
             Video
           </Typography>
           <PortfolioYouTubeEmbed url={item.youtubeUrl} title={item.title} />
-        </Box>
-      ) : null}
-
-      {item.model3d ? (
-        <Box>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            3D model
-          </Typography>
-          <Link href={item.model3d.url} target="_blank" rel="noopener noreferrer">
-            Download {item.model3d.originalName}
-          </Link>
         </Box>
       ) : null}
     </Stack>
