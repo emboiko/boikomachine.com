@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAdminSessionFromRequest } from '@/lib/auth/session';
 import { getPortfolioMediaUrl } from '@/lib/portfolio/mediaUrls';
-import { uploadPortfolioImage, uploadPortfolioModelFile } from '@/lib/storage/blob';
+import { uploadPortfolioImage } from '@/lib/storage/blob';
 
 export const POST = async (request) => {
   const session = await getAdminSessionFromRequest(request);
@@ -13,19 +13,12 @@ export const POST = async (request) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
-    const uploadType = formData.get('type') || 'image';
 
     if (!file || typeof file.arrayBuffer !== 'function') {
       return NextResponse.json({ message: 'No file provided.' }, { status: 400 });
     }
 
-    let upload;
-
-    if (uploadType === 'model') {
-      upload = await uploadPortfolioModelFile(file);
-    } else {
-      upload = await uploadPortfolioImage(file);
-    }
+    const upload = await uploadPortfolioImage(file);
 
     return NextResponse.json({
       upload: {

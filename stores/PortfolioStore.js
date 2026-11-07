@@ -51,12 +51,6 @@ const PortfolioImageModel = types.model('PortfolioImage', {
   sortOrder: types.number,
 });
 
-const PortfolioModel3dModel = types.model('PortfolioModel3d', {
-  storageKey: types.string,
-  originalName: types.string,
-  url: types.string,
-});
-
 const PortfolioDetailItemModel = types.model('PortfolioDetailItem', {
   id: types.identifier,
   slug: types.string,
@@ -69,7 +63,6 @@ const PortfolioDetailItemModel = types.model('PortfolioDetailItem', {
   material: types.maybeNull(types.string),
   youtubeUrl: types.maybeNull(types.string),
   images: types.array(PortfolioImageModel),
-  model3d: types.maybeNull(PortfolioModel3dModel),
 });
 
 export const PortfolioStore = types

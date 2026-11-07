@@ -1,9 +1,9 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { Section } from '@/components/layout/Section';
-import { BUSINESS } from '@/lib/constants';
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { Section } from '@/components/layout/Section'
+import { BUSINESS } from '@/lib/constants'
 
 export const HeroSection = () => {
   return (
@@ -39,9 +39,10 @@ export const HeroSection = () => {
       </Stack>
       <Box sx={{ mt: 4 }}>
         <Typography variant="body1" color="text.secondary">
-          Based in {BUSINESS.location} and serving customers throughout New England and beyond when practical.
+          Based in {BUSINESS.location} and serving customers throughout New England and beyond when
+          practical.
         </Typography>
       </Box>
     </Section>
-  );
-};
+  )
+}

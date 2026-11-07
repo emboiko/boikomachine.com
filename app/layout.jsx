@@ -11,17 +11,17 @@ import { BUSINESS } from '@/lib/constants';
 import './globals.css';
 
 const siteDescription =
-  'Boiko Machine & Tool - custom machining, repair, precision prototypes, and tooling in southern New Hampshire. Small jobs welcome.';
+  'Boiko Machine & Tool is a New Hampshire machine shop for custom machining, repair, precision prototypes, and tooling in southern NH. Small jobs welcome.';
 
 export const metadata = {
   metadataBase: new URL(BUSINESS.siteUrl),
   title: {
-    default: `${BUSINESS.name} | Custom Machining & Tooling`,
+    default: `${BUSINESS.name} | NH Machine Shop`,
     template: `%s | ${BUSINESS.name}`,
   },
   description: siteDescription,
   openGraph: {
-    title: `${BUSINESS.name} | Custom Machining & Tooling`,
+    title: `${BUSINESS.name} | NH Machine Shop`,
     description: siteDescription,
     url: BUSINESS.siteUrl,
     siteName: BUSINESS.name,
@@ -30,7 +30,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${BUSINESS.name} | Custom Machining & Tooling`,
+    title: `${BUSINESS.name} | NH Machine Shop`,
     description: siteDescription,
   },
   alternates: {

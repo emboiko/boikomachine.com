@@ -47,7 +47,7 @@ export const PortfolioImageManager = ({ images, coverStorageKey, onChange, onCov
       const uploadedImages = [];
 
       for (const file of fileList) {
-        const upload = await uploadAdminPortfolioMedia(file, 'image');
+        const upload = await uploadAdminPortfolioMedia(file);
         uploadedImages.push({
           storageKey: upload.storageKey,
           url: upload.url,

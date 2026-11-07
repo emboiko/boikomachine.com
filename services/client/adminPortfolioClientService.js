@@ -59,10 +59,9 @@ export const deleteAdminPortfolioItem = async (id) => {
   return parseJsonResponse(response);
 };
 
-export const uploadAdminPortfolioMedia = async (file, type = 'image') => {
+export const uploadAdminPortfolioMedia = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('type', type);
 
   const response = await fetch('/api/admin/portfolio/media', {
     method: 'POST',

@@ -1,18 +1,17 @@
-'use client';
+'use client'
 
-import { useRouter } from 'next/navigation';
-import { AdminShell } from '@/components/admin/AdminShell';
-import { PortfolioItemForm } from '@/components/admin/PortfolioItemForm';
-import { createAdminPortfolioItem } from '@/services/client/adminPortfolioClientService';
+import { useRouter } from 'next/navigation'
+import { AdminShell } from '@/components/admin/AdminShell'
+import { PortfolioItemForm } from '@/components/admin/PortfolioItemForm'
+import { createAdminPortfolioItem } from '@/services/client/adminPortfolioClientService'
 
 export const AdminPortfolioCreatePage = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleSubmit = async (payload) => {
-    await createAdminPortfolioItem(payload);
-    router.replace('/admin/portfolio');
-    router.refresh();
-  };
+    await createAdminPortfolioItem(payload)
+    router.replace('/admin/portfolio')
+  }
 
   return (
     <AdminShell
@@ -22,5 +21,5 @@ export const AdminPortfolioCreatePage = () => {
     >
       <PortfolioItemForm onSubmit={handleSubmit} />
     </AdminShell>
-  );
-};
+  )
+}
