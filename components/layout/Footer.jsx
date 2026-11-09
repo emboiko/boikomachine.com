@@ -1,12 +1,12 @@
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-import { FooterSocialLinks } from '@/components/layout/FooterSocialLinks';
-import { BUSINESS } from '@/lib/constants';
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
+import { FooterSocialLinks } from '@/components/layout/FooterSocialLinks'
+import { BUSINESS } from '@/lib/constants'
 
 export const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <Box
@@ -60,5 +60,5 @@ export const Footer = () => {
         </Box>
       </Container>
     </Box>
-  );
-};
+  )
+}

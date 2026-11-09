@@ -38,6 +38,23 @@ export default function AdminPage() {
             </Stack>
           </CardContent>
         </Card>
+
+        <Card variant="outlined">
+          <CardContent>
+            <Stack spacing={2}>
+              <Typography variant="h3" sx={{ fontSize: '1.125rem' }}>
+                Work orders
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Send a quote, collect a deposit, then invoice the finished job and print a
+                letter-size copy to mail.
+              </Typography>
+              <Button component={Link} href="/admin/work-orders" variant="contained" sx={{ alignSelf: 'flex-start' }}>
+                Manage work orders
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
       </Stack>
     </AdminShell>
   );

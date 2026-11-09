@@ -1,25 +1,27 @@
-'use client';
+'use client'
 
-import { useRef } from 'react';
-import { observer } from 'mobx-react-lite';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import MenuIcon from '@mui/icons-material/Menu';
-import { ThemeToggle } from '@/components/layout/ThemeToggle';
-import { AdminNavLink } from '@/components/layout/AdminNavLink';
-import { useStore } from '@/components/StoreProvider';
-import { BUSINESS } from '@/lib/constants';
-import { trackCtaClick, sendGaEvent } from '@/services/client/analyticsClientService';
+import { useRef } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { observer } from 'mobx-react-lite'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import MenuIcon from '@mui/icons-material/Menu'
+import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import { AdminNavLink } from '@/components/layout/AdminNavLink'
+import { useStore } from '@/components/StoreProvider'
+import { BUSINESS } from '@/lib/constants'
+import { trackCtaClick, sendGaEvent } from '@/services/client/analyticsClientService'
 
 const NAV_ITEMS = [
   { label: 'Services', href: '#services' },
@@ -27,50 +29,61 @@ const NAV_ITEMS = [
   { label: 'Portfolio', href: '#portfolio' },
   { label: 'Service Area', href: '#service-area' },
   { label: 'Contact', href: '#contact' },
-];
+]
 
 const handleNavClick = (href, label) => {
-  trackCtaClick(href, { cta: 'nav', label });
-  sendGaEvent('cta_click', { cta_type: 'nav', label });
-};
+  trackCtaClick(href, { cta: 'nav', label })
+  sendGaEvent('cta_click', { cta_type: 'nav', label })
+}
 
 const scrollToSection = (href) => {
   if (typeof window === 'undefined') {
-    return;
+    return
   }
 
-  const element = document.querySelector(href);
+  const element = document.querySelector(href)
 
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+    element.scrollIntoView({ behavior: 'smooth' })
   }
-};
+}
 
 export const Header = observer(() => {
-  const store = useStore();
-  const pendingScrollHref = useRef(null);
+  const store = useStore()
+  const pathname = usePathname()
+  const pendingScrollHref = useRef(null)
+  let logoHref = '#top'
+
+  if (pathname !== '/') {
+    logoHref = '/#top'
+  }
 
   const navigateTo = (href, label) => {
-    handleNavClick(href, label);
+    handleNavClick(href, label)
 
-    if (store.ui.mobileNavOpen) {
-      pendingScrollHref.current = href;
-      store.ui.closeMobileNav();
-      return;
+    if (pathname !== '/') {
+      window.location.assign(`/${href}`)
+      return
     }
 
-    scrollToSection(href);
-  };
+    if (store.ui.mobileNavOpen) {
+      pendingScrollHref.current = href
+      store.ui.closeMobileNav()
+      return
+    }
+
+    scrollToSection(href)
+  }
 
   const handleDrawerExited = () => {
     if (!pendingScrollHref.current) {
-      return;
+      return
     }
 
-    const href = pendingScrollHref.current;
-    pendingScrollHref.current = null;
-    scrollToSection(href);
-  };
+    const href = pendingScrollHref.current
+    pendingScrollHref.current = null
+    scrollToSection(href)
+  }
 
   const navList = (
     <List sx={{ width: 260 }}>
@@ -82,18 +95,23 @@ export const Header = observer(() => {
         </ListItem>
       ))}
       <ListItem disablePadding>
+        <ListItemButton component={Link} href="/pay" onClick={() => store.ui.closeMobileNav()}>
+          <ListItemText primary="Pay Invoice" />
+        </ListItemButton>
+      </ListItem>
+      <ListItem disablePadding>
         <ListItemButton
           component="a"
           href={BUSINESS.phoneHref}
           onClick={() => {
-            store.ui.closeMobileNav();
+            store.ui.closeMobileNav()
           }}
         >
           <ListItemText primary="Call" secondary={BUSINESS.phone} />
         </ListItemButton>
       </ListItem>
     </List>
-  );
+  )
 
   return (
     <>
@@ -120,7 +138,7 @@ export const Header = observer(() => {
           <Toolbar disableGutters sx={{ minHeight: 64, gap: 1 }}>
             <Typography
               component="a"
-              href="#top"
+              href={logoHref}
               variant="h6"
               sx={{
                 flexGrow: 1,
@@ -139,10 +157,17 @@ export const Header = observer(() => {
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, alignItems: 'center' }}>
               {NAV_ITEMS.map((item) => (
-                <Button key={item.href} color="inherit" onClick={() => navigateTo(item.href, item.label)}>
+                <Button
+                  key={item.href}
+                  color="inherit"
+                  onClick={() => navigateTo(item.href, item.label)}
+                >
                   {item.label}
                 </Button>
               ))}
+              <Button component={Link} href="/pay" color="inherit">
+                Pay Invoice
+              </Button>
               <ThemeToggle />
               <AdminNavLink />
               <Button variant="contained" href={BUSINESS.phoneHref} sx={{ ml: 0.5 }}>
@@ -175,5 +200,5 @@ export const Header = observer(() => {
         {navList}
       </Drawer>
     </>
-  );
-});
+  )
+})
