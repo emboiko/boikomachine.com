@@ -39,8 +39,7 @@ export const HeroSection = () => {
       </Stack>
       <Box sx={{ mt: 4 }}>
         <Typography variant="body1" color="text.secondary">
-          Based in {BUSINESS.location} and serving customers throughout New England and beyond when
-          practical.
+          Based in {BUSINESS.location} and serving customers throughout New England and beyond.
         </Typography>
       </Box>
     </Section>
