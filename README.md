@@ -9,7 +9,8 @@ Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js l
 - Vercel account (deploy target)
 - Cloudflare Turnstile site keys
 - Vercel Blob store (`BLOB_READ_WRITE_TOKEN`)
-- Resend API key (contact notifications)
+- Resend API key (contact notifications and work-order emails)
+- Stripe keys, when taking a deposit on a quote or a payment on `/pay`
 
 ## Local development
 
@@ -19,7 +20,7 @@ Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js l
    cp .env.example .env.local
    ```
 
-2. Fill in `.env.local` with your Atlas URI, Turnstile keys, Blob token, Resend key, and admin auth vars (`SESSION_SECRET`, `ADMIN_PASSWORD_HASH` from `npm run hash:admin-password`).
+2. Fill in `.env.local` with your Atlas URI, Turnstile keys, Blob token, Resend key, Stripe keys, and admin auth vars (`SESSION_SECRET`, `ADMIN_PASSWORD_HASH` from `npm run hash:admin-password`).
 
 3. Install dependencies:
 
@@ -50,18 +51,34 @@ Page (thin) → Page component → Section components
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Development server |
-| `npm run build` | Production build |
-| `npm run start` | Run production build locally |
-| `npm run lint` | ESLint |
-| `npm run format` | Prettier write |
+| Command                       | Description                                    |
+| ----------------------------- | ---------------------------------------------- |
+| `npm run dev`                 | Development server                             |
+| `npm run build`               | Production build                               |
+| `npm run start`               | Run production build locally                   |
+| `npm run lint`                | ESLint                                         |
+| `npm run format`              | Prettier write                                 |
 | `npm run hash:admin-password` | Generate bcrypt hash for `ADMIN_PASSWORD_HASH` |
 
 ## Portfolio admin
 
 Sign in at `/admin/login`, then manage projects at `/admin/portfolio`. Categories are fixed on the public site (machining, 3D printing, fabrication, repair & misc). Upload photos via the admin form; they are served from `/api/portfolio/media`.
+
+## Work orders
+
+Sign in at `/admin/login`, then open **Work orders**. Create a quote, send it, and print a letter-size copy from the work order page. The quote email links to `/quote/{code}`. Resend the quote before work starts. Once the job is completed, that same `BMT-` code becomes the invoice, which can be sent again if the customer needs another copy. Customers pay the finished invoice at `/pay` with that code. No customer account is required. A required deposit can be paid on the quote page. The remaining balance is collected after the job is completed.
+
+Card payments use Stripe's Payment Element on the site. Set `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and `STRIPE_WEBHOOK_SECRET`. The webhook path is `/api/stripe/webhook`. Locally:
+
+```bash
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+Check and cash are recorded from the work order page after the money is in hand. Each sends the same kind of receipt as a card payment.
+
+## Money
+
+Persisted amounts are integer cents. Do not add, subtract, multiply, or divide money outside [`lib/money.js`](lib/money.js). That includes `amount * 100`. Form fields keep dollar strings until submit, then `dollarsToCents` converts them by splitting the decimal string. Display uses `formatCents`. Stripe amounts are already cents and still pass through `assertCents` before they are stored. Future financing math belongs in this module too.
 
 ## Deployment (Vercel)
 
