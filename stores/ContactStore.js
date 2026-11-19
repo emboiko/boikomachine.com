@@ -1,6 +1,10 @@
 import { types, flow } from 'mobx-state-tree';
 import { submitContactForm } from '@/services/client/contactClientService';
-import { trackFormSubmit, sendGaEvent } from '@/services/client/analyticsClientService';
+import {
+  trackFormSubmit,
+  sendGaEvent,
+  sendOpenAiEvent,
+} from '@/services/client/analyticsClientService';
 import {
   MAX_FILE_SIZE_BYTES,
   MAX_TOTAL_UPLOAD_BYTES,
@@ -152,6 +156,7 @@ export const ContactStore = types
         self.submitSuccess = true;
         trackFormSubmit('/#contact');
         sendGaEvent('form_submit', { form_name: 'contact' });
+        sendOpenAiEvent('lead_created', { type: 'customer_action' });
 
         self.name = '';
         self.email = '';
