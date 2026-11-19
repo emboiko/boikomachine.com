@@ -82,3 +82,15 @@ export const sendGaEvent = (eventName, params) => {
 
   window.gtag('event', eventName, params);
 };
+
+export const sendOpenAiEvent = (eventName, eventData) => {
+  if (
+    typeof window === 'undefined' ||
+    !isAnalyticsEnabled() ||
+    typeof window.oaiq !== 'function'
+  ) {
+    return;
+  }
+
+  window.oaiq('measure', eventName, eventData);
+};

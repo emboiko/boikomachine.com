@@ -41,6 +41,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   const analyticsEnabled = isAnalyticsEnabled();
   const gaMeasurementId = analyticsEnabled ? process.env.GA_MEASUREMENT_ID : undefined;
+  const openaiPixelId = analyticsEnabled ? process.env.OPENAI_PIXEL_ID : undefined;
+  const vercelEnv =
+    process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.VERCEL_ENV || '';
+  const openaiPixelDebug = vercelEnv !== 'production';
 
   return (
     <html lang="en" className={sourceSans.className} suppressHydrationWarning>
@@ -68,6 +72,14 @@ export default function RootLayout({ children }) {
               `}
             </Script>
           </>
+        ) : null}
+        {openaiPixelId ? (
+          <Script id="openai-ads-pixel" strategy="afterInteractive">
+            {`
+              !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");
+              oaiq("init",{pixelId:"${openaiPixelId}",debug:${openaiPixelDebug}});
+            `}
+          </Script>
         ) : null}
       </body>
     </html>
