@@ -2,36 +2,71 @@
 
 You are an agent looking for how to register or authenticate against Boiko Machine & Tool (`https://boikomachine.com`).
 
-## Current state
+This document is self-contained. There is no OAuth Protected Resource Metadata and no Authorization Server on this host — do not fetch `/.well-known/oauth-protected-resource` or `/.well-known/oauth-authorization-server` expecting registration metadata.
 
-This site does **not** support agentic registration, OAuth, API keys, or customer accounts.
+## Agent audience
 
-- There is no public sign-up or sign-in.
-- There is no Protected Resource Metadata at `/.well-known/oauth-protected-resource`.
-- There is no Authorization Server metadata, `agent_auth` block, identity endpoint, or claim ceremony.
-- Do **not** attempt `identity_assertion`, `service_auth`, or `anonymous` registration against this host.
+Any agent (browser agent, crawler, or assistant acting for a human) that needs to understand how authentication works on this public marketing and contact site.
 
-Public site content is available without credentials. Stop here for auth purposes.
+There are no customer accounts, no API keys, and no agent credentials to obtain. Public pages are readable without registration.
 
-## What this site is
+## Registration methods supported
 
-Boiko Machine & Tool is a public marketing and contact site for a machine shop. Visitors browse capabilities and portfolio work, then reach out by phone, email, or the contact form. There are no end-user accounts to create or act on behalf of.
+Only `anonymous` access to public content:
 
-## How to interact without auth
+- No account is created.
+- No credential is issued.
+- Call or fetch public URLs directly.
 
-1. Read public pages and `robots.txt` (including Content Signals) for crawl and usage preferences.
-2. Use the sitemap at `/sitemap.xml` for discoverable URLs.
-3. For human contact on behalf of a user, direct them to the site contact options — do not invent credentials or probe private paths.
+`identity_assertion`, `service_auth`, ID-JAG, verified-email claim ceremonies, and `POST /agent/auth` are **not** supported. Do not invent registration requests against this host.
 
-Contact details are published on the homepage (`https://boikomachine.com`).
+## Registration and provisioning endpoints
+
+There are no registration or provisioning endpoints.
+
+- `register_uri`: none
+- `claim_uri`: none (nothing to claim; public access needs no binding)
+- `revocation_uri`: none (no credentials are issued)
+
+Staff-only surfaces are out of scope for agents and are not customer auth.
+
+## Credential use
+
+Credentials are not used on the public site.
+
+- Do not send `Authorization` headers to public pages.
+- Do not ask users to paste passwords, tokens, or API keys for this site.
+- For human contact on behalf of a user, point them at the contact options on `https://boikomachine.com` (phone, email, or the contact form). Do not automate form abuse.
+
+## Machine-readable summary
+
+```json
+{
+  "agent_auth": {
+    "skill": "https://boikomachine.com/auth.md",
+    "register_uri": null,
+    "identity_types_supported": ["anonymous"],
+    "anonymous": {
+      "credential_types_supported": ["none"],
+      "claim_uri": null
+    }
+  }
+}
+```
+
+## Related discovery
+
+- Site: `https://boikomachine.com`
+- Sitemap: `https://boikomachine.com/sitemap.xml`
+- Crawl preferences: `https://boikomachine.com/robots.txt`
 
 ## Errors you should expect
 
 | Situation | Meaning | What to do |
 | --- | --- | --- |
-| Missing `/.well-known/oauth-protected-resource` | No OAuth resource is advertised | Do not invent registration endpoints |
+| Missing OAuth well-known documents | No OAuth resource or authorization server is advertised | Stay with this file; do not invent endpoints |
 | `401` / `403` on non-public paths | Private or staff-only surface | Stop; no customer auth exists to recover with |
-| Contact form challenges | Bot protection for human submissions | Do not automate form abuse; have the user contact the shop directly |
+| Contact form challenges | Bot protection for human submissions | Have the user contact the shop directly |
 
 ## Revocation
 
