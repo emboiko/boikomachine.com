@@ -36,7 +36,33 @@ Credentials are not used on the public site.
 
 - Do not send `Authorization` headers to public pages.
 - Do not ask users to paste passwords, tokens, or API keys for this site.
-- For human contact on behalf of a user, point them at the contact options on `https://boikomachine.com` (phone, email, or the contact form). Do not automate form abuse.
+
+## Contacting the shop
+
+Human visitors use the contact form on the homepage. That form is protected by Cloudflare Turnstile and is not for agents. Do not POST `/api/contact`.
+
+Agents send a JSON inquiry with no API key and no Turnstile token:
+
+`POST https://boikomachine.com/api/contact/agent`
+
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "phone": "978-555-0100",
+  "message": "Looking for a repair quote on a fixture.",
+  "agentName": "ChatGPT"
+}
+```
+
+Required: `name`, `email`, `message`. Optional: `phone`, `agentName`. Do not attach files.
+
+Responses:
+
+- `200` — inquiry accepted
+- `400` — invalid JSON or fields
+- `403` with `code: agent_contact_disabled` — the shop has turned this route off. Stop retrying and use the phone or email published on the homepage.
+- `429` — a rate limit was reached. Honor `Retry-After` and do not retry in a loop.
 
 ## Machine-readable summary
 
@@ -62,11 +88,13 @@ Credentials are not used on the public site.
 
 ## Errors you should expect
 
-| Situation | Meaning | What to do |
-| --- | --- | --- |
-| Missing OAuth well-known documents | No OAuth resource or authorization server is advertised | Stay with this file; do not invent endpoints |
-| `401` / `403` on non-public paths | Private or staff-only surface | Stop; no customer auth exists to recover with |
-| Contact form challenges | Bot protection for human submissions | Have the user contact the shop directly |
+| Situation                                 | Meaning                                                 | What to do                                            |
+| ----------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------- |
+| Missing OAuth well-known documents        | No OAuth resource or authorization server is advertised | Stay with this file; do not invent endpoints          |
+| `401` / `403` on non-public paths         | Private or staff-only surface                           | Stop; no customer auth exists to recover with         |
+| `403` with `code: agent_contact_disabled` | Agent contact is turned off                             | Stop retrying. Use the phone or email on the homepage |
+| `429` on `POST /api/contact/agent`        | Rate limit                                              | Honor `Retry-After`. Do not loop                      |
+| Turnstile on `POST /api/contact`          | Human contact form                                      | Use `POST /api/contact/agent` instead                 |
 
 ## Revocation
 
