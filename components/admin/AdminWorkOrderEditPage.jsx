@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined'
 import Link from 'next/link'
 import { AdminShell } from '@/components/admin/AdminShell'
 import { WorkOrderForm } from '@/components/admin/WorkOrderForm'
@@ -210,6 +211,22 @@ export const AdminWorkOrderEditPage = ({ workOrderId }) => {
     printLabel = 'Print invoice'
   }
 
+  let inquiryLink = null
+
+  if (workOrder && workOrder.shopInquiryId) {
+    inquiryLink = (
+      <Button
+        component={Link}
+        href={`/admin/inquiries/${workOrder.shopInquiryId}`}
+        size="small"
+        startIcon={<ForumOutlinedIcon />}
+        sx={{ alignSelf: 'flex-start' }}
+      >
+        Inquiry
+      </Button>
+    )
+  }
+
   return (
     <AdminShell title="Work order" backHref="/admin/work-orders" backLabel="Work orders">
       {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
@@ -224,9 +241,12 @@ export const AdminWorkOrderEditPage = ({ workOrderId }) => {
       {!isLoading && workOrder ? (
         <Stack spacing={4}>
           <Stack spacing={1}>
-            <Typography variant="overline" color="text.secondary">
-              {workOrder.invoiceCode}
-            </Typography>
+            <Stack direction="row" spacing={2} useFlexGap sx={{ alignItems: 'center' }}>
+              <Typography variant="overline" color="text.secondary">
+                {workOrder.invoiceCode}
+              </Typography>
+              {inquiryLink}
+            </Stack>
             <Typography variant="body1">
               {WORK_STATUS_LABELS[workOrder.workStatus]} ·{' '}
               {PAYMENT_STATUS_LABELS[workOrder.paymentStatus]}

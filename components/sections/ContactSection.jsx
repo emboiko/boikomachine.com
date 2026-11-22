@@ -1,65 +1,65 @@
-'use client';
+'use client'
 
-import { useCallback, useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { Section } from '@/components/layout/Section';
-import { TurnstileWidget } from '@/components/contact/TurnstileWidget';
-import { useStore } from '@/components/StoreProvider';
-import { BUSINESS } from '@/lib/constants';
-import { formatPhoneAsYouType } from '@/lib/formatPhone';
-import { trackCtaClick, sendGaEvent } from '@/services/client/analyticsClientService';
+import { useCallback, useEffect } from 'react'
+import { observer } from 'mobx-react-lite'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Link from '@mui/material/Link'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import { Section } from '@/components/layout/Section'
+import { TurnstileWidget } from '@/components/contact/TurnstileWidget'
+import { useStore } from '@/components/StoreProvider'
+import { BUSINESS } from '@/lib/constants'
+import { formatPhoneAsYouType } from '@/lib/formatPhone'
+import { trackCtaClick, sendGaEvent } from '@/services/client/analyticsClientService'
 
 export const ContactSection = observer(() => {
-  const store = useStore();
-  const { contact } = store;
+  const store = useStore()
+  const { contact } = store
 
   const handleVerify = useCallback(
     (token) => {
-      contact.setTurnstileToken(token);
+      contact.setTurnstileToken(token)
     },
     [contact],
-  );
+  )
 
   const handleExpire = useCallback(() => {
-    contact.clearTurnstileToken();
-  }, [contact]);
+    contact.clearTurnstileToken()
+  }, [contact])
 
   const handleTurnstileUnavailable = useCallback(() => {
-    contact.setTurnstileUnavailable();
-  }, [contact]);
+    contact.setTurnstileUnavailable()
+  }, [contact])
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) {
-      contact.setTurnstileUnavailable();
+      contact.setTurnstileUnavailable()
     }
-  }, [contact]);
+  }, [contact])
 
-  const isFormDisabled = contact.isContactFormDisabled;
-  const isTurnstileUnavailable = contact.turnstileUnavailable;
+  const isFormDisabled = contact.isContactFormDisabled
+  const isTurnstileUnavailable = contact.turnstileUnavailable
 
   const handleCallClick = () => {
-    trackCtaClick('/#contact', { cta: 'call' });
-    sendGaEvent('cta_call', { location: 'contact_section' });
-  };
+    trackCtaClick('/#contact', { cta: 'call' })
+    sendGaEvent('cta_call', { location: 'contact_section' })
+  }
 
   const handleEmailClick = () => {
-    trackCtaClick('/#contact', { cta: 'email' });
-    sendGaEvent('cta_email', { location: 'contact_section' });
-  };
+    trackCtaClick('/#contact', { cta: 'email' })
+    sendGaEvent('cta_email', { location: 'contact_section' })
+  }
 
-  let submitButtonLabel = 'Send Message';
+  let submitButtonLabel = 'Send Message'
 
   if (contact.isSubmitting) {
-    submitButtonLabel = 'Sending…';
+    submitButtonLabel = 'Sending…'
   } else if (contact.submitSuccess) {
-    submitButtonLabel = 'Message sent';
+    submitButtonLabel = 'Message sent'
   }
 
   return (
@@ -73,8 +73,9 @@ export const ContactSection = observer(() => {
           <Stack spacing={2}>
             <Typography variant="body1" color="text.secondary">
               Tell us about your part, problem, or project. Drawings are helpful but not required -
-              photos and a clear description work well. We use what you send only to evaluate whether
-              we can take the job on. We do not sell your information or add you to marketing lists.
+              photos and a clear description work well. We use what you send only to evaluate
+              whether we can take the job on. We do not sell your information or add you to
+              marketing lists.
             </Typography>
             <Typography variant="body1">
               <Link href={BUSINESS.phoneHref} underline="hover" onClick={handleCallClick}>
@@ -93,10 +94,10 @@ export const ContactSection = observer(() => {
           component="form"
           sx={{ width: { xs: '100%', md: '62%' }, minWidth: 0, flex: 1 }}
           onSubmit={(event) => {
-            event.preventDefault();
+            event.preventDefault()
 
             if (!contact.submitSuccess) {
-              contact.submit();
+              contact.submit()
             }
           }}
         >
@@ -110,6 +111,7 @@ export const ContactSection = observer(() => {
             {contact.errorMessage && <Alert severity="error">{contact.errorMessage}</Alert>}
 
             <TextField
+              id="contact-name"
               label="Name"
               required
               fullWidth
@@ -121,6 +123,7 @@ export const ContactSection = observer(() => {
             />
 
             <TextField
+              id="contact-email"
               label="Email"
               type="email"
               required
@@ -133,6 +136,7 @@ export const ContactSection = observer(() => {
             />
 
             <TextField
+              id="contact-phone"
               label="Phone (optional)"
               type="tel"
               inputMode="tel"
@@ -141,12 +145,13 @@ export const ContactSection = observer(() => {
               disabled={isFormDisabled}
               value={contact.phone}
               onChange={(event) => {
-                contact.setPhone(formatPhoneAsYouType(event.target.value));
+                contact.setPhone(formatPhoneAsYouType(event.target.value))
               }}
               placeholder="(555) 555-0100"
             />
 
             <TextField
+              id="contact-message"
               label="Message"
               required
               fullWidth
@@ -169,12 +174,16 @@ export const ContactSection = observer(() => {
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp,.heic,.pdf,.stp,.step,.dxf,.sla"
                   onChange={(event) => {
-                    contact.setFiles(event.target.files);
+                    contact.setFiles(event.target.files)
                   }}
                 />
               </Button>
               {contact.files.length > 0 && (
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, wordBreak: 'break-word' }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mt: 1, wordBreak: 'break-word' }}
+                >
                   {contact.files.map((file) => file.name).join(', ')}
                 </Typography>
               )}
@@ -225,5 +234,5 @@ export const ContactSection = observer(() => {
         </Box>
       </Stack>
     </Section>
-  );
-});
+  )
+})

@@ -10,6 +10,7 @@ import { PortfolioSection } from '@/components/sections/PortfolioSection';
 import { ServiceAreaSection } from '@/components/sections/ServiceAreaSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { AnalyticsBootstrap } from '@/components/AnalyticsBootstrap';
+import { ShopAssistantWidget } from '@/components/shopAssistant/ShopAssistantWidget';
 
 export const LandingPage = () => {
   return (
@@ -25,6 +26,7 @@ export const LandingPage = () => {
         <ContactSection />
       </Box>
       <Footer />
+      <ShopAssistantWidget />
     </Box>
   );
 };

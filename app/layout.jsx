@@ -13,6 +13,12 @@ import './globals.css';
 const siteDescription =
   'Boiko Machine & Tool is a New Hampshire machine shop for custom machining, repair, precision prototypes, and tooling in southern NH. Small jobs welcome.';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  interactiveWidget: 'resizes-content',
+}
+
 export const metadata = {
   metadataBase: new URL(BUSINESS.siteUrl),
   title: {
