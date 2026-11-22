@@ -11,19 +11,23 @@
     "hash:admin-password": "node scripts/hash-admin-password.mjs"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.181",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
     "@mui/material-nextjs": "^9.5.0",
+    "@openai/agents": "^0.22.0",
+    "@openai/agents-extensions": "^0.22.0",
     "@stripe/react-stripe-js": "^7.0.1",
     "@stripe/stripe-js": "^10.2.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.2",
+    "ai": "^7.0.177",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.15",
     "mobx": "^6.16.1",

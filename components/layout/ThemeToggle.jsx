@@ -1,48 +1,64 @@
-'use client';
+'use client'
 
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import { useColorScheme } from '@mui/material/styles';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import { useEffect, useState } from 'react'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import { useColorScheme } from '@mui/material/styles'
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 
 export const ThemeToggle = () => {
-  const { colorScheme, setMode } = useColorScheme();
-  const isReady = Boolean(colorScheme);
-  const isDark = colorScheme === 'dark';
-  const label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+  const { colorScheme, setMode } = useColorScheme()
+  const [hasMounted, setHasMounted] = useState(false)
 
-  const button = (
-    <IconButton
-      aria-label={isReady ? label : 'Theme toggle'}
-      aria-hidden={!isReady}
-      disabled={!isReady}
-      onClick={() => {
-        if (isDark) {
-          setMode('light');
-        } else {
-          setMode('dark');
-        }
-      }}
-      color="inherit"
-      size="large"
-      tabIndex={isReady ? 0 : -1}
-      sx={
-        isReady
-          ? undefined
-          : {
-              pointerEvents: 'none',
-              visibility: 'hidden',
-            }
-      }
-    >
-      {isDark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
-    </IconButton>
-  );
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
-  if (!isReady) {
-    return button;
+  const isReady = hasMounted && Boolean(colorScheme)
+  const isDark = colorScheme === 'dark'
+  let label = 'Theme toggle'
+  let icon = <DarkModeOutlinedIcon />
+  let tabIndex = -1
+  let buttonSx = {
+    pointerEvents: 'none',
+    visibility: 'hidden',
   }
 
-  return <Tooltip title={label}>{button}</Tooltip>;
-};
+  if (isReady) {
+    tabIndex = 0
+    buttonSx = undefined
+
+    if (isDark) {
+      label = 'Switch to light mode'
+      icon = <LightModeOutlinedIcon />
+    } else {
+      label = 'Switch to dark mode'
+    }
+  }
+
+  return (
+    <Tooltip title={label}>
+      <span>
+        <IconButton
+          aria-label={label}
+          aria-hidden={!isReady}
+          disabled={!isReady}
+          onClick={() => {
+            if (isDark) {
+              setMode('light')
+            } else {
+              setMode('dark')
+            }
+          }}
+          color="inherit"
+          size="large"
+          tabIndex={tabIndex}
+          sx={buttonSx}
+        >
+          {icon}
+        </IconButton>
+      </span>
+    </Tooltip>
+  )
+}

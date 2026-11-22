@@ -1,15 +1,16 @@
 # Boiko Machine & Tool
 
-Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js landing page with contact form, portfolio, analytics, and MongoDB-backed services. WIP.
+Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js landing page with contact form, portfolio, shop chat, inquiries, work orders, analytics, and MongoDB-backed services. WIP.
 
 ## Requirements
 
-- **Node.js 20+** (recommended: `nvm install 20` / `nvm use 20`)
+- **Node.js 22+** (the shop assistant SDK requires it; `nvm install 22` / `nvm use 22`)
 - MongoDB Atlas cluster
 - Vercel account (deploy target)
 - Cloudflare Turnstile site keys
 - Vercel Blob store (`BLOB_READ_WRITE_TOKEN`)
-- Resend API key (contact notifications and work-order emails)
+- Resend API key (contact notifications, inquiry emails, and work-order emails)
+- OpenAI API key (`OPENAI_API_KEY`) for the shop assistant. `OPENAI_MODEL` defaults to `gpt-6.2-sol`.
 - Stripe keys, when taking a deposit on a quote or a payment on `/pay`
 
 ## Local development
@@ -20,7 +21,7 @@ Web presence and API for [boikomachine.com](https://boikomachine.com). Next.js l
    cp .env.example .env.local
    ```
 
-2. Fill in `.env.local` with your Atlas URI, Turnstile keys, Blob token, Resend key, Stripe keys, and admin auth vars (`SESSION_SECRET`, `ADMIN_PASSWORD_HASH` from `npm run hash:admin-password`).
+2. Fill in `.env.local` with your Atlas URI, Turnstile keys, Blob token, Resend key, OpenAI key, Stripe keys, and admin auth vars (`SESSION_SECRET`, `ADMIN_PASSWORD_HASH` from `npm run hash:admin-password`). Shop-chat limits are optional and documented in `.env.example`.
 
 3. Install dependencies:
 
@@ -47,7 +48,8 @@ Page (thin) → Page component → Section components
 - **`stores/`** - MobX State Tree (UI, Contact, Portfolio)
 - **`services/client/`** - browser `fetch` layer (stores call these only)
 - **`lib/services/`** - server business logic (route handlers call these only)
-- **`lib/storage/`** - Vercel Blob uploads for contact attachments and portfolio media
+- **`lib/storage/`** - Vercel Blob uploads for contact attachments, inquiry files, and portfolio media
+- **`lib/shopAssistant/`** - shop profile, the public assistant, and the signed-in copilot
 
 ## Scripts
 
@@ -64,9 +66,19 @@ Page (thin) → Page component → Section components
 
 Sign in at `/admin/login`, then manage projects at `/admin/portfolio`. Categories are fixed on the public site (machining, 3D printing, fabrication, repair & misc). Upload photos via the admin form; they are served from `/api/portfolio/media`.
 
+## Shop assistant and inquiries
+
+The homepage has an **Ask the shop** chat. A visitor can describe a job, attach the same kinds of photos and drawings the contact form accepts, and agree to send one request. That request is a `ShopInquiry`, separate from a work order. The shop is emailed when it arrives. Photos and files are stored in Vercel Blob and listed on the inquiry. The visitor's chat is remembered in that browser for 30 days. **New chat** clears it on their side after a warning. An inquiry request already sent is not undone.
+
+Sign in at `/admin/login`, then open **Inquiries**. The list has a general shop copilot. Each inquiry has its own copilot, your private notes, a feasibility note, and the customer's files. The copilot on an inquiry can see attached photos. It does not open CAD files. **Needs info** and **Accept** only change the status. **Decline** asks for a message, sends the customer a letter in the same wrapped layout as the quote emails, and copies the shop. Leave the message blank to send a short standard apology.
+
+An inquiry is not a quote. Accepting one does not email the customer and does not create a work order.
+
 ## Work orders
 
 Sign in at `/admin/login`, then open **Work orders**. Create a quote, send it, and print a letter-size copy from the work order page. The quote email links to `/quote/{code}`. Resend the quote before work starts. Once the job is completed, that same `BMT-` code becomes the invoice, which can be sent again if the customer needs another copy. Customers pay the finished invoice at `/pay` with that code. No customer account is required. A required deposit can be paid on the quote page. The remaining balance is collected after the job is completed.
+
+An accepted inquiry can start that quote with **Write quote**. The new work-order form opens with the customer's name, email, phone, address, and a title filled in. Prices stay blank until you write them. Saving the draft links the two records. The work order page then shows an **Inquiry** link back. Sending the quote is still the email the customer gets.
 
 Card payments use Stripe's Payment Element on the site. Set `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and `STRIPE_WEBHOOK_SECRET`. The webhook path is `/api/stripe/webhook`. Locally:
 
@@ -87,9 +99,9 @@ Persisted amounts are integer cents. Do not add, subtract, multiply, or divide m
 3. Enable Vercel Analytics in the project dashboard.
 4. Point DNS for `boikomachine.com` to Vercel.
 
-## Contact form attachments - ops note
+## Contact form and inquiry files - ops note
 
-Submitted files are stored in **Vercel Blob**. Metadata lives in MongoDB; download via URLs in the Resend notification email.
+Submitted files are stored in **Vercel Blob**. Metadata lives in MongoDB. Contact-form files and inquiry files are both downloaded from signed-in admin links in the Resend notification email.
 
 **Recommended review workflow:** open attachments on a sandboxed machine or VM. Do not open unknown CAD/PDF files with macros enabled on your primary workstation.
 

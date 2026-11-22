@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography'
 import { Section } from '@/components/layout/Section'
 import { BUSINESS } from '@/lib/constants'
 
+const heroSubheadingFontSize = { xs: '1.125rem', md: '1.25rem' }
+const wideHeroNoteQuery = '@media (min-width: 623px)'
+
 export const HeroSection = () => {
   return (
     <Section
@@ -20,9 +23,36 @@ export const HeroSection = () => {
         <Typography
           variant="h3"
           color="text.secondary"
-          sx={{ fontWeight: 500, fontSize: { xs: '1.125rem', md: '1.25rem' } }}
+          sx={{ fontWeight: 500, fontSize: heroSubheadingFontSize }}
         >
-          Custom machining, repair, and tooling based in southern New Hampshire. Small jobs welcome.
+          Custom machining, repair, and tooling based in southern New Hampshire.
+          <Box
+            component="span"
+            sx={{
+              display: 'inline',
+              [wideHeroNoteQuery]: {
+                display: 'none',
+              },
+            }}
+          >
+            {' '}
+            Agent-friendly. Small jobs welcome.
+          </Box>
+        </Typography>
+        <Typography
+          variant="h3"
+          color="text.secondary"
+          sx={{
+            fontWeight: 500,
+            fontSize: heroSubheadingFontSize,
+            marginTop: '0px !important',
+            display: 'none',
+            [wideHeroNoteQuery]: {
+              display: 'block',
+            },
+          }}
+        >
+          Agent-friendly. Small jobs welcome.
         </Typography>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}

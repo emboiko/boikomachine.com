@@ -14,7 +14,7 @@ const emptyLineItem = (description = '') => {
   return { description, amount: '' }
 }
 
-const buildInitialState = (initialWorkOrder) => {
+const buildInitialState = (initialWorkOrder, initialValues) => {
   if (initialWorkOrder) {
     return {
       customerName: initialWorkOrder.customerName,
@@ -31,12 +31,14 @@ const buildInitialState = (initialWorkOrder) => {
     }
   }
 
+  const values = initialValues || {}
+
   return {
-    customerName: '',
-    customerEmail: '',
-    customerPhone: '',
-    customerAddress: '',
-    title: '',
+    customerName: values.customerName || '',
+    customerEmail: values.customerEmail || '',
+    customerPhone: values.customerPhone || '',
+    customerAddress: values.customerAddress || '',
+    title: values.title || '',
     lineItems: [emptyLineItem('Labor & Machining')],
     depositAmount: '0.00',
     contractText: '',
@@ -52,11 +54,13 @@ const readLineItems = (lineItems) => {
 
 export const WorkOrderForm = ({
   initialWorkOrder,
+  initialValues,
+  shopInquiryId = '',
   onSubmit,
   amountsLocked = false,
   depositLocked = false,
 }) => {
-  const [formState, setFormState] = useState(() => buildInitialState(initialWorkOrder))
+  const [formState, setFormState] = useState(() => buildInitialState(initialWorkOrder, initialValues))
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const isCreateMode = !initialWorkOrder
@@ -129,6 +133,10 @@ export const WorkOrderForm = ({
         lineItems: readLineItems(formState.lineItems),
         depositCents: dollarsToCents(formState.depositAmount),
         contractText: formState.contractText,
+      }
+
+      if (shopInquiryId) {
+        payload.shopInquiryId = shopInquiryId
       }
 
       await onSubmit(payload)

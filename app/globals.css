@@ -29,3 +29,20 @@ html[data-mui-color-scheme='dark'] {
 html[data-mui-color-scheme='light'] {
   color-scheme: light;
 }
+
+html.shop-chat-scroll-lock,
+html.shop-chat-scroll-lock body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+html.shop-chat-scroll-lock header {
+  touch-action: none !important;
+  overscroll-behavior: none;
+}
+
+html.shop-chat-scroll-lock [data-shop-chat-messages] {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}

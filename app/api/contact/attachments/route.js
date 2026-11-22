@@ -4,6 +4,7 @@ import { get } from '@vercel/blob';
 import { getAdminSessionFromRequest } from '@/lib/auth/session';
 import {
   isContactAttachmentPath,
+  isShopInquiryAttachmentPath,
   sanitizeAttachmentFilename,
   shouldInlineAttachment,
 } from '@/lib/storage/blob';
@@ -13,7 +14,7 @@ export const GET = async (request) => {
   const pathname = requestUrl.searchParams.get('pathname');
   const filenameParam = requestUrl.searchParams.get('filename');
 
-  if (!isContactAttachmentPath(pathname)) {
+  if (!isContactAttachmentPath(pathname) && !isShopInquiryAttachmentPath(pathname)) {
     return NextResponse.json({ message: 'Invalid attachment path.' }, { status: 400 });
   }
 

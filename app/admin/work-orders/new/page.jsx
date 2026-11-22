@@ -8,6 +8,13 @@ export const metadata = {
   },
 }
 
-export default function NewWorkOrderPage() {
-  return <AdminWorkOrderCreatePage />
+export default async function NewWorkOrderPage({ searchParams }) {
+  const resolvedSearchParams = await searchParams
+  let inquiryId = ''
+
+  if (typeof resolvedSearchParams.inquiry === 'string') {
+    inquiryId = resolvedSearchParams.inquiry
+  }
+
+  return <AdminWorkOrderCreatePage inquiryId={inquiryId} />
 }

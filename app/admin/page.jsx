@@ -43,6 +43,22 @@ export default function AdminPage() {
           <CardContent>
             <Stack spacing={2}>
               <Typography variant="h3" sx={{ fontSize: '1.125rem' }}>
+                Inquiries
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Review requests from the shop assistant and decide whether to write a quote.
+              </Typography>
+              <Button component={Link} href="/admin/inquiries" variant="contained" sx={{ alignSelf: 'flex-start' }}>
+                Review inquiries
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+
+        <Card variant="outlined">
+          <CardContent>
+            <Stack spacing={2}>
+              <Typography variant="h3" sx={{ fontSize: '1.125rem' }}>
                 Work orders
               </Typography>
               <Typography variant="body2" color="text.secondary">

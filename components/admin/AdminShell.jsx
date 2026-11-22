@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-export const AdminShell = ({ children, title = 'Admin', backHref, backLabel = 'Back' }) => {
+export const AdminShell = ({ children, title = 'Admin', backHref, backLabel = 'Back', maxWidth = 'md' }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -17,7 +17,7 @@ export const AdminShell = ({ children, title = 'Admin', backHref, backLabel = 'B
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
+    <Container maxWidth={maxWidth} sx={{ py: { xs: 4, md: 6 } }}>
       <Stack spacing={4}>
         <Box
           sx={{

@@ -195,7 +195,15 @@ export const Header = observer(() => {
         open={store.ui.mobileNavOpen}
         onClose={() => store.ui.closeMobileNav()}
         sx={{ display: { md: 'none' } }}
+        ModalProps={{ disableScrollLock: true }}
         SlideProps={{ onExited: handleDrawerExited }}
+        PaperProps={{
+          sx: {
+            overflowY: 'auto',
+            overscrollBehavior: 'contain',
+            touchAction: 'pan-y',
+          },
+        }}
       >
         {navList}
       </Drawer>
